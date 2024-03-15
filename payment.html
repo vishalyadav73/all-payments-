@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Options</title>
+</head>
+<body>
+  <h1>Select Payment Option</h1>
+  <div class="payment-options">
+    <input type="radio" id="credit-card" name="payment" value="credit_card">
+    <label for="credit-card">Credit Card</label>
+    
+
+    <input type="radio" id="internet-banking" name="payment" value="internet_banking">
+    <label for="internet-banking">Internet Banking</label>
+
+    <input type="radio" id="upi" name="payment" value="upi">
+    <label for="upi">UPI</label>
+  </div>
+  <div id="payment-details">
+  </div><br>
+  <button id="submit-btn">Pay Now</button>
+  <script>
+  const paymentOptions = document.querySelectorAll('.payment-options input[type="radio"]');
+const paymentDetails = document.getElementById('payment-details');
+const submitBtn = document.getElementById('submit-btn');
+
+paymentOptions.forEach(option => {
+  option.addEventListener('change', (event) => {
+    const selectedPayment = event.target.value;
+    paymentDetails.innerHTML = ""; // Clear previous content
+
+    if (selectedPayment === 'credit_card') {
+      // Add form elements for credit card details here (number, expiry, CVV)
+      paymentDetails.innerHTML = `<br>
+
+      <label for="card-number">Card Holder Name:</label><br>
+        <input type="text" id="card-number"  maxlength="16" placeholder="Card Holder Name" required><br><br>
+
+        <label for="card-number">Card Number:</label><br>
+        <input type="text" id="card-number"  maxlength="16" placeholder="Card " required><br><br>
+
+        <label for="expiry-month">Expiry MM/YY:</label><br>
+        <input type="number" id="expiry-month" min="1" max="12" placeholder="MM/YY" required><br><br>
+       
+        <label for="cvv">CVV:</label><br>
+        <input type="password" id="cvv" minlength="3" maxlength="3" placeholder="CVV" required><br><br>
+      `;
+    }
+
+
+    if (selectedPayment === 'internet_banking') {
+      // Add form elements for credit card details here (number, expiry, CVV)
+      paymentDetails.innerHTML = `<br>
+        <label for="internet_banking">Select Bank:</label><br>
+        <select name="" id="">
+          <option value="">Select Bank</option>
+          <option value="">HDFC Bank</option>
+          <option value="">ICIC Bank</option>
+          <option value="">State Bank Of India</option>
+          <option value="">Kotak Mahindra Bank</option>
+          <option value="">Axis Bank</option>
+          <option value="">Yes Bank</option>
+          </select>
+        <br><br>
+        <label for="expiry-month">Account Number:</label><br>
+        <input type="Password" id="expiry-month"  placeholder="Account Nuber" maxlength="16" required><br><br>
+
+        <label for="cvv">IFSC Code:</label><br>
+        <input type="text"  placeholder="IFSC Code" required><br><br>
+      `;
+    }
+
+
+
+
+    if (selectedPayment === 'upi') {
+      // Add form elements for credit card details here (number, expiry, CVV)
+      paymentDetails.innerHTML = `<br>
+      <label for="UPI">Select Your UPI APP</label><br>
+        <select name="" id="">
+          <option value="">Select</option>
+          <option value="">BHIM</option>
+          <option value="">Phonepe</option>
+          <option value="">Paytm</option>
+          <option value="">GooglePay</option>
+          <option value="">Other UPI </option>
+          </select>
+        <br><br>
+        <label for="expiry-month">Enter Your UPI ID Or Number:</label><br>
+        <input type="text"  placeholder="Enter Your UPI ID" required><br><br>
+      `;
+    }
+
+    submitBtn.addEventListener('click', () => {
+      const paymentData = {};
+
+      if (selectedPayment === 'credit_card') {
+        paymentData.cardNumber = document.getElementById('card-number').value;
+        paymentData.expiryMonth = document.getElementById('expiry-month').value;
+        paymentData.expiryYear = document.getElementById('expiry-year').value;
+        paymentData.cvv = document.getElementById('cvv').value;
+      } else if (selectedPayment === 'internet_banking' || selectedPayment === 'upi') {
+        // User might need to be redirected to a different page for these options
+        paymentData.paymentMethod = selectedPayment;
+      }
+
+
+
+      
+      // Send the payment data to your server-side script using AJAX or fetch
+      fetch('/process-payment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(paymentData)
+      })
+      .then(response => {
+        if (response.ok) {
+          alert('Payment successful!');
+          // Handle successful payment (e.g., update order status, redirect user)
+        } else {
+          alert('Payment failed!');
+          // Handle failed payment (e.g., display error message)
+        }
+      })
+      .catch(error => {
+        alert('Error processing payment: ' + error);
+      });
+    });
+  });
+});
+</script>
+  
+</body>
+</html>
